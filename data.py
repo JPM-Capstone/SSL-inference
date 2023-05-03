@@ -11,8 +11,7 @@ class LabeledDataset(Dataset):
 
     def __init__(self):
 
-        self.data = pd.read_csv(os.path.join("data", "yahoo_test.csv"), 
-                                index_col=0)
+        self.data = pd.read_csv(os.path.join("data", "yahoo_test.csv"))
                 
     def __len__(self):
 

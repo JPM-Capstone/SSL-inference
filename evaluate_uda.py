@@ -46,7 +46,8 @@ def main(config_name):
 
         # Load the pretrained model
         model = RobertaForSequenceClassification.from_pretrained(os.path.join(run, f'epoch_{best_idx + 1}.pt'))
-
+        model.to(DEVICE)
+        
         # Creating training and validation datasets
         test_dataset = LabeledDataset()
         

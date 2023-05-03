@@ -44,6 +44,7 @@ def main(config_name):
 
             # Load the pretrained model
             model = RobertaForSequenceClassification.from_pretrained(ckpt)
+            model.to(DEVICE)
 
             # Creating training and validation datasets
             test_dataset = LabeledDataset()
