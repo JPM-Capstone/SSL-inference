@@ -12,7 +12,7 @@ from data import LabeledDataset
 BATCH_SIZE = 32
 PAD_token = 1 # RoBERTa
 
-PATH_TO_RESULTS = os.path.join("..", "UDA", "results")
+PATH_TO_RESULTS = os.path.join("..", "Mix-Text", "results")
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -36,28 +36,26 @@ def main(config_name):
 
     runs = glob(os.path.join(PATH_TO_RESULTS, config_name, "run_*"))
 
-    logger = open(os.path.join("uda_results", f"{config_name}.csv"), 'w')
-    logger.write("Test Accuracy\n")
-    
-    for run in runs:
-        with open(os.path.join(run, 'history.pkl'), 'rb') as f:
-            data = pickle.load(f)
-            best_idx = np.array(data['val_accuracy']).argmax()
+    logger = open(os.path.join("mixtext_results", f"{config_name}.csv"), 'w')
+    logger.write("Run, Test Accuracy\n")
 
-        # Load the pretrained model
-        model = RobertaForSequenceClassification.from_pretrained(os.path.join(run, f'epoch_{best_idx + 1}.pt'))
+    for i, run in enumerate(runs):
+        for ckpt in glob(os.path.join(run, "*.pt")):
 
-        # Creating training and validation datasets
-        test_dataset = LabeledDataset()
-        
-        test_loader = DataLoader(test_dataset, 
-                                batch_size = BATCH_SIZE, 
-                                shuffle=False,
-                                collate_fn = collate_batch)
+            # Load the pretrained model
+            model = RobertaForSequenceClassification.from_pretrained(ckpt)
 
-        accuracy = evaluate(model, test_loader)
+            # Creating training and validation datasets
+            test_dataset = LabeledDataset()
+            
+            test_loader = DataLoader(test_dataset, 
+                                    batch_size = BATCH_SIZE, 
+                                    shuffle=False,
+                                    collate_fn = collate_batch)
 
-        logger.write(f"{accuracy:.6f}\n")
+            accuracy = evaluate(model, test_loader)
+
+            logger.write(f"{i + 1}, {accuracy:.6f}\n")
 
     logger.close()
     
