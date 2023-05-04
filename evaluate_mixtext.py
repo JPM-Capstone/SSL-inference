@@ -43,7 +43,8 @@ def main(config_name):
         for ckpt in glob(os.path.join(run, "*.pt")):
 
             # Load the pretrained model
-            model = RobertaForSequenceClassification.from_pretrained(ckpt)
+            model = RobertaForSequenceClassification.from_pretrained('roberta-large', num_labels = 10)
+            model.load_state_dict(torch.load(ckpt))
             model.to(DEVICE)
 
             # Creating training and validation datasets

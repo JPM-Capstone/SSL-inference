@@ -45,7 +45,8 @@ def main(config_name):
             best_idx = np.array(data['val_accuracy']).argmax()
 
         # Load the pretrained model
-        model = RobertaForSequenceClassification.from_pretrained(os.path.join(run, f'epoch_{best_idx + 1}.pt'))
+        model = RobertaForSequenceClassification.from_pretrained('roberta-large', num_labels = 10)
+        model.load_state_dict(torch.load(os.path.join(run, f'epoch_{best_idx + 1}.pt')))
         model.to(DEVICE)
         
         # Creating training and validation datasets
