@@ -9,6 +9,7 @@ from transformers import RobertaForSequenceClassification
 from torch.utils.data import DataLoader
 from data import LabeledDataset
 from mixtext import MixText
+from collections import OrderedDict
 
 BATCH_SIZE = 32
 PAD_token = 1 # RoBERTa
@@ -45,7 +46,15 @@ def main(config_name):
 
             # Load the pretrained model
             model = MixText(10)
-            model.load_state_dict(torch.load(ckpt))
+
+            state_dict = torch.load(ckpt)
+            new_state_dict = OrderedDict()
+
+            for k, v in state_dict.items():
+                name = k[len('module.'):] # remove `module.`
+                new_state_dict[name] = v
+
+            model.load_state_dict(new_state_dict)
             model.to(DEVICE)
 
             # Creating training and validation datasets
