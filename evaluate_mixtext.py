@@ -8,6 +8,7 @@ from torch.nn.utils.rnn import pad_sequence
 from transformers import RobertaForSequenceClassification
 from torch.utils.data import DataLoader
 from data import LabeledDataset
+from mixtext import MixText
 
 BATCH_SIZE = 32
 PAD_token = 1 # RoBERTa
@@ -43,7 +44,7 @@ def main(config_name):
         for ckpt in glob(os.path.join(run, "*.pt")):
 
             # Load the pretrained model
-            model = RobertaForSequenceClassification.from_pretrained('roberta-large', num_labels = 10)
+            model = MixText(10)
             model.load_state_dict(torch.load(ckpt))
             model.to(DEVICE)
 
