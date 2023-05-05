@@ -25,7 +25,6 @@ def evaluate(model, val_loader):
     with torch.no_grad():
         for batch in val_loader:
             input_ids = batch[0].to(DEVICE)
-            attention_mask = batch[1].to(DEVICE)
             labels = batch[2].to(DEVICE)
 
             outputs = model(input_ids)
