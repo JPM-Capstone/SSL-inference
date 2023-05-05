@@ -28,7 +28,7 @@ def evaluate(model, val_loader):
             attention_mask = batch[1].to(DEVICE)
             labels = batch[2].to(DEVICE)
 
-            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            outputs = model(input_ids)
             val_acc += (outputs.logits.argmax(dim=1) == labels).sum().item()
 
     return val_acc/len(val_loader.dataset)
